@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	
+	<title>Bestop Video Player</title>
+	
+	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+	<style>
+		body {
+			margin:2rem;
+		}
+
+		.modal-dialog {
+			  max-width: 800px;
+			  margin: 30px auto;
+		 }
+
+		.modal-body {
+			position:relative;
+			padding:0px;
+		}
+		
+		.close {
+			position:absolute;
+			right:5px;
+			top:0;
+			z-index:999;
+			font-size:2rem;
+			font-weight: normal;
+			color:#fff;
+			opacity:1;
+		}
+		
+		.card{
+			margin:10px!important;
+		}
+		
+		.video-btn{
+			cursor: default!important;
+			margin-left:10px;
+		}
+		
+		.video-btn:hover{
+			color: blue;
+			text-decoration: underline;
+		}
+		
+		.dropdown-item{
+			cursor: default!important;
+		}
+		
+		
+		@media(max-width:574px)
+		{
+			.video-btn img{
+				width:5%;
+				margin-right:5px;
+			}
+		}
+
+		@media(min-width:575px) and (max-width:990px)
+		{
+			.card-body h5{
+				font-size:0.95em!important;
+			}
+			.video-btn{
+				line-height:1.1em!important;
+				margin: 5px 0;
+				font-size:0.8em;
+			}
+			.filtered{
+				width:50%;
+			}
+			
+			.video-btn img{
+				width:10%;
+				margin-right:5px;
+			}
+			
+		}
+		
+		@media(min-width:991px) and (max-width:1199px)
+		{
+			.filtered{
+
+				width:50%;
+			}
+			
+			.video-btn img{
+			width:6%;
+			margin-right:5px;
+		}
+		}
+		
+		@media(min-width:1200px)
+		{
+			.filtered{
+
+				width:35%;
+			}
+			
+			.video-btn img{
+			width:6%;
+			margin-right:5px;
+		}
+		}
+	</style>
+	
+	<script
+	src="https://code.jquery.com/jquery-2.2.4.min.js"
+	integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+	crossorigin="anonymous"></script>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+	
+	<script>
+	$(document).ready(function()
+	{
+		// Gets the video src from the data-src on each button
+		var $videoSrc;  
+		$('.video-btn').click(function() {
+			$videoSrc = $(this).data( "src" );
+			//console.log($videoSrc);
+		});//#.video-btn click
+		
+		// when the modal is opened autoplay it  
+		$('#myModal').on('shown.bs.modal', function (e)
+		{
+
+			// set the video src to autoplay and not to show related video. Youtube related video is like a box of chocolates... you never know what you're gonna get
+			$("#video").attr('src',$videoSrc);
+			
+			//$("#video").attr('src',$videoSrc + "?rel=0&amp;showinfo=0&amp;modestbranding=1&amp;autoplay=1&amp;controls=0&amp'enablejsapi=1" ); 
+		});//#myModal show
+
+		// stop playing the youtube video when I close the modal
+		$('#myModal').on('hide.bs.modal', function (e)
+		{
+			// a poor man's stop video
+			$("#video").attr('src',$videoSrc); 
+		});//#myModal close
+		
+		//filter videos on category drop down selection
+		$('.dropdown-item').click(function()
+		{
+			//set text of dropdown to selected value
+			$('.dropdown-toggle').text($(this).text());
+			
+			//hide all cards
+			$(".card").hide();
+			
+			//move contents of card in filter to filter output div
+			//fetch data-id of drop down item selected
+			var myValue = $(this).data('id');
+			var mySearch = ".card[data-search=" + myValue + "]";
+			//build data search string for filtering below
+			//find matching data-search in container class
+			//$("#filtercontainer").html(($(mySearch).html()));
+			
+			//if All Categories selected, show all categories div and hide filtered categories container
+			if (myValue=="allcategories")
+			{
+				//show all cards
+				$(".card").show();
+			
+				//removed filtered css class so cards display three wide
+				$("#allcategoriescontainer").removeClass("filtered");
+				//$("#allcategoriescontainer").show(); //show all categories container
+				//$("#filtercontainer").hide(); // hide filtered container
+			}
+			else
+			{
+				//show filtered card
+				$(mySearch).show();
+				$("#allcategoriescontainer").addClass("filtered");
+				
+				//$("#filtercontainer").show(); //show filtered container
+				//$("#allcategoriescontainer").hide(); //hide all categories container
+			}
+		});//.dropdown-item click
+	});//document ready
+	</script>
+	</head>
+	
+	<body>
+	<!--filter drop down-->
+	<div class="dropdown">
+		<button class="btn btn-secondary dropdown-toggle" type="button" id="mysearch2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			Choose product category
+		</button>
+		<div class="dropdown-menu" aria-labelledby="mysearch2">
+			<a class="dropdown-item" data-id="allcategories">All Categories</a>
+			<a class="dropdown-item" data-id="allnewtrektopnx">All-New Trektop NX</a>
+			<a class="dropdown-item" data-id="bikinis">Bikinis/Sun Bikinis</a>
+			<a class="dropdown-item" data-id="doors">Doors</a>
+			<a class="dropdown-item" data-id="floormats">Floormats</a>
+			<a class="dropdown-item" data-id="lockboxes">Lockboxes</a>
+			<a class="dropdown-item" data-id="modbumpers">Modular Bumpers</a>
+			<a class="dropdown-item" data-id="powerboardjk">Powerboard for JK</a>
+			<a class="dropdown-item" data-id="retractsunshade">Retractable Sunshade</a>
+			<a class="dropdown-item" data-id="tailgateshelf">Roughrider Tailgate Shelf</a>
+			<a class="dropdown-item" data-id="seatcovers">Seat Covers</a>
+			<a class="dropdown-item" data-id="sunrider">Sunrider for Hardtop</a>
+			<a class="dropdown-item" data-id="supertoptruck">Supertop for Truck</a>
+			<a class="dropdown-item" data-id="supertopnx">Supertop NX</a>
+			<a class="dropdown-item" data-id="ttnxglide">Trektop NX Glide</a>
+			<a class="dropdown-item" data-id="ttpro">Trektop Pro</a>
+		</div>
+	</div>
+
+	<!--build 3-wide Bootstrap grid-->
+	<div id="allcategoriescontainer" class="container">
+		<div class="row"><!--row 1-->
+			<div class="col-sm card" data-search="sunrider">
+				<img class="card-img-top" src="img/sfht.jpg" alt="sunrider for hardtop image">
+				<div class="card-body">
+					<h5 class="card-title">Sunrider for Hardtop</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/TBCyYTNBObI" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Installation</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/YiyhUPLzvPg" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Installation Tips and Tricks</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/OPM01UGIanA" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>First Impressions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+			<div class="col-sm card" data-search="ttnxglide">
+				<img class="card-img-top" src="img/nxglide.jpg" alt="trektop nx glide image">
+				<div class="card-body">
+					<h5 class="card-title">Trektop NX Glide</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/tFs0mzROVz8" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Overview</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/3SMFZhwRtdM" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>First Impressions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+			<div class="col-sm card" data-search="allnewtrektopnx">
+				<img class="card-img-top" src="img/ttnx.jpg" alt="trektop nx image">
+				<div class="card-body">
+					<h5 class="card-title">All-New Trektop NX</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/DrhcYQyEMV8" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Overview</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/BdhHFvdXz10" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>First Impressions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+		</div><!--/row1-->
+
+		<div class="row"><!--row 2-->
+			<div class="col-sm card" data-search="ttpro">
+				<img class="card-img-top" src="img/ttpro.jpg" alt="trektop pro image">
+				<div class="card-body">
+					<h5 class="card-title">Trektop Pro</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed//ElE_ljtgytk" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Installation Instructions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+			<div class="col-sm card" data-search="supertopnx">
+				<img class="card-img-top" src="img/stnx.jpg" alt="supertop nx image">
+				<div class="card-body">
+					<h5 class="card-title">Supertop NX</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/l4Msj1n-6Q0" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Overview</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+			<div class="col-sm card" data-search="retractsunshade">
+				<img class="card-img-top" src="img/retractsunshade.jpg" alt="retractable sunshade image">
+				<div class="card-body">
+					<h5 class="card-title">Retractable Sunshade</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/JCmEqykiPRE" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Overview</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/JCmEqykiPRE" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Features and Benefits</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/JCmEqykiPRE" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Installation Instructions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+		</div><!--/row2-->
+			
+		<div class="row"><!--row 3-->
+			<div class="col-sm card" data-search="doors">
+				<img class="card-img-top" src="img/doors.jpg" alt="door image">
+				<div class="card-body">
+					<h5 class="card-title">Doors</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/J18Pjs7FZjo" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Overview</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/J18Pjs7FZjo" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Features and Benefits</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/A867SmzXtPc" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Installation Instructions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+			<div class="col-sm card" data-search="bikinis">
+				<img class="card-img-top" src="img/bikini.jpg" alt="bikini image">
+				<div class="card-body">
+					<h5 class="card-title">Bikinis/Sun Bikinis</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/F5Le62LQ6No" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Features and Benefits</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+			<div class="col-sm card" data-search="supertoptruck">
+				<img class="card-img-top" src="img/stft.jpg" alt="supertop for truck image">
+				<div class="card-body">
+					<h5 class="card-title">Supertop for Truck</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/???" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Overview</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/???" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Features and Benefits</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/???" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Installation Instructions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+		</div><!--/row3-->
+		
+		<div class="row"><!--row 4-->
+			<div class="col-sm card" data-search="seatcovers">
+				<img class="card-img-top" src="img/seatcovers.jpg" alt="seat cover image">
+				<div class="card-body">
+					<h5 class="card-title">Seat Covers</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/xsBc-AcTyOo" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Overview</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/xsBc-AcTyOo" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Features and Benefits</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/xsBc-AcTyOo" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Installation Instructions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+			<div class="col-sm card" data-search="floormats">
+				<img class="card-img-top" src="img/floormats.jpg" alt="floor mat image">
+				<div class="card-body">
+					<h5 class="card-title">Floor Mats</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/xaWp_Jlhkjs" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Overview</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/xaWp_Jlhkjs" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Features and Benefits</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/xaWp_Jlhkjs" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Installation Instructions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+			<div class="col-sm card" data-search="powerboardjk">
+				<img class="card-img-top" src="img/powerboardjk.jpg" alt="powerboard for jk image">
+				<div class="card-body">
+					<h5 class="card-title">Powerboard for JK</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/Itd9cewQjY0" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Overview</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/Itd9cewQjY0" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Features and Benefits</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/Itd9cewQjY0" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Installation Instructions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+		</div><!--/row4-->
+		
+		<div class="row"><!--row 5-->
+			<div class="col-sm card" data-search="modbumpers">
+				<img class="card-img-top" src="img/modbumper.jpg" alt="modular bumper image">
+				<div class="card-body">
+					<h5 class="card-title">Modular Bumper</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/B3UHL1tWr68" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Overview</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/B3UHL1tWr68" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Features and Benefits</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/B3UHL1tWr68" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Installation Instructions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+			<div class="col-sm card" data-search="lockboxes">
+				<img class="card-img-top" src="img/lockbox.jpg" alt="lockbox image">
+				<div class="card-body">
+					<h5 class="card-title">Lockboxes</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/aMFhPyDYDZs" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Overview</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/aMFhPyDYDZs" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Features and Benefits</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/aMFhPyDYDZs" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Installation Instructions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+			<div class="col-sm card" data-search="tailgateshelf">
+				<img class="card-img-top" src="img/tailgateshelf.jpg" alt="roughrider tailgate shelf">
+				<div class="card-body">
+					<h5 class="card-title">Roughrider Tailgate Shelf</h5>
+					<p class="card-text">
+						<h5>Videos:</h5>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/fPmCKm8cJPk" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Overview</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/fPmCKm8cJPk" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Features and Benefits</div>
+						<div class="video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/fPmCKm8cJPk" data-target="#myModal"><img src=
+						"img/playbutton.svg"/>Installation Instructions</div>
+					</p>
+				</div><!--/card-body-->
+
+			</div>
+		</div><!--/row4-->
+			
+</div>
+  </div>
+</div>
+
+<div id="filtercontainer" class="container">
+	<div class="row">
+		<div class="card col-sm"></div>
+	</div>
+</div>
+
+		<!-- Modal for video-->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-body">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>        
+						<!-- 16:9 aspect ratio -->
+						<div class="embed-responsive embed-responsive-16by9">
+							<iframe class="embed-responsive-item" type="text/html" width="640" height="390" src="" id="video"   frameborder="0"></iframe>
+						</div>
+        
+        
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
